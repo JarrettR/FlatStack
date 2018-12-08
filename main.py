@@ -15,23 +15,29 @@ def path_to_vpy(inPath):
 def attribs_to_vpy(in_attribs):
     extrude = None
     rotate = None
-    max = 0
+    rotateMax = 0
+    position = None
+
     if 'fsextrude' in in_attribs:
         extrude = int(in_attribs['fsextrude'])
     if 'fsrotate' in in_attribs:
         rotate = list(map(float, in_attribs['fsrotate'].split(',')))
         rotate = list(map(radians, rotate))
 
-        max = rotate[0]
-        if rotate[1] > max:
-            max = rotate[1]
-        if rotate[2] > max:
-            max = rotate[2]
-        if max > 0:
-            rotate[0] = rotate[0] / max
-            rotate[1] = rotate[1] / max
-            rotate[2] = rotate[2] / max
-    return extrude, rotate, max
+        rotateMax = rotate[0]
+        if rotate[1] > rotateMax:
+            rotateMax = rotate[1]
+        if rotate[2] > rotateMax:
+            rotateMax = rotate[2]
+        if rotateMax > 0:
+            rotate[0] = rotate[0] / rotateMax
+            rotate[1] = rotate[1] / rotateMax
+            rotate[2] = rotate[2] / rotateMax
+
+    if 'fsposition' in in_attribs:
+        position = list(map(float, in_attribs['fsposition'].split(',')))
+
+    return extrude, rotate, rotateMax, position
 
 def is_joint(attributes):
     if 'fsjoint' in attributes:
@@ -39,20 +45,26 @@ def is_joint(attributes):
     return False
 
 def parse_vector(in_vector, in_attribs):
-    type = 4
     basePath = path_to_vpy(in_vector)
-    extrude, rotate, rotateMax = attribs_to_vpy(in_attribs)
+    extrude, rotate, rotateMax, position = attribs_to_vpy(in_attribs)
+
     if extrude is None:
         extrude_vec = vec(0,0,2)
     else:
         extrude_vec = vec(0,0,extrude)
+
     if rotate is None:
         rotate_vec = vec(0,0,0)
     else:
         rotate_vec = vec(rotate[0],rotate[1],rotate[2])
-    position = in_vector.bbox()
-    vecPosition = vec(position[3] - position[0], 0, 0)
-    extr = extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=vecPosition)
+
+    if position is None:
+        position = in_vector.bbox()
+        position_vec = vec(position[2] - position[0], 0, 0)
+    else:
+        position_vec = vec(position[0],position[1],position[2])
+
+    extr = extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=position_vec)
     extr.rotate(angle=rotateMax, axis=rotate_vec)
 
 def parse_svg(filename):
