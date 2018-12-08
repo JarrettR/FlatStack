@@ -1,4 +1,4 @@
-from vpython import canvas, color, curve, vec, extrusion, checkbox, rate
+from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
 import os, platform
 
@@ -15,11 +15,23 @@ def path_to_vpy(inPath):
 def attribs_to_vpy(in_attribs):
     extrude = None
     rotate = None
+    max = 0
     if 'fsextrude' in in_attribs:
         extrude = int(in_attribs['fsextrude'])
     if 'fsrotate' in in_attribs:
-        rotate = int(in_attribs['fsrotate'])
-    return extrude, rotate
+        rotate = list(map(float, in_attribs['fsrotate'].split(',')))
+        rotate = list(map(radians, rotate))
+
+        max = rotate[0]
+        if rotate[1] > max:
+            max = rotate[1]
+        if rotate[2] > max:
+            max = rotate[2]
+        if max > 0:
+            rotate[0] = rotate[0] / max
+            rotate[1] = rotate[1] / max
+            rotate[2] = rotate[2] / max
+    return extrude, rotate, max
 
 def is_joint(attributes):
     if 'fsjoint' in attributes:
@@ -29,14 +41,19 @@ def is_joint(attributes):
 def parse_vector(in_vector, in_attribs):
     type = 4
     basePath = path_to_vpy(in_vector)
-    extrude, rotate = attribs_to_vpy(in_attribs)
+    extrude, rotate, rotateMax = attribs_to_vpy(in_attribs)
     if extrude is None:
         extrude_vec = vec(0,0,2)
     else:
         extrude_vec = vec(0,0,extrude)
+    if rotate is None:
+        rotate_vec = vec(0,0,0)
+    else:
+        rotate_vec = vec(rotate[0],rotate[1],rotate[2])
     position = in_vector.bbox()
     vecPosition = vec(position[3] - position[0], 0, 0)
-    extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=vecPosition)
+    extr = extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=vecPosition)
+    extr.rotate(angle=rotateMax, axis=rotate_vec)
 
 def parse_svg(filename):
     paths, attributes, svg_attributes = svg2paths2(filename)
@@ -96,7 +113,6 @@ if __name__ == '__main__':
             modified = file_modified(filename)
 
             for a in scene.objects:
-                print(a)
                 a.visible = False
                 del a
             parse_svg(filename)

@@ -57,7 +57,8 @@
        d="m 54.428572,197.21428 8.315476,-21.92261 -17.386906,-6.80358 22.678572,-5.29166 12.095237,29.48214 -18.898809,12.85119 z"
        id="path4518"
        inkscape:connector-curvature="0"
-       fsextrude="20" />
+       fsextrude="20"
+       fsrotate="0,90,0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 112.6369,190.41071 12.09524,-27.21428 35.52976,7.55952 2.26786,24.19048 -5.29167,15.11904 -23.43452,-6.80357 5.29167,-15.11905 -12.85119,-4.53571 -9.82738,17.3869 -9.07143,-4.53571 z"

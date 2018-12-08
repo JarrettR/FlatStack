@@ -12,7 +12,7 @@ Depth in mm of the extrusion.
 
 ### fsrotate: x, y, z
 
-3 axis of rotation for the final 3D model
+3 axis of rotation for the final 3D model, in degrees
 
 ### fsposition: x, y, z
 
