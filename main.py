@@ -17,10 +17,12 @@ def attribs_to_vpy(in_attribs):
     rotate = None
     if 'fsextrude' in in_attribs:
         extrude = int(in_attribs['fsextrude'])
+    if 'fsrotate' in in_attribs:
+        rotate = int(in_attribs['fsrotate'])
     return extrude, rotate
 
 def is_joint(attributes):
-    if 'joint' in attributes:
+    if 'fsjoint' in attributes:
         return True
     return False
 
