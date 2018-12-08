@@ -75,12 +75,12 @@ def file_modified(filename):
 
 
 if __name__ == '__main__':
-    scene = canvas() # This is needed in Jupyter notebook and lab to make programs easily rerunnable
+    scene = canvas()
     scene.background = color.gray(0.8)
     scene.forward = vec(0,-0.2,-1)
     scene.fov = 0.2
     #Todo: range to enclose bounding box of all points
-    scene.range = 200
+    scene.range = 100
     scene.caption = """Right button drag or Ctrl-drag to rotate "camera" to view scene.
     To zoom, drag with middle button or Alt/Option depressed, or use scroll wheel.
          On a two-button mouse, middle is left + right.
