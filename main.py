@@ -11,7 +11,14 @@ def path_to_vpy(inPath):
             print('Not line!', segment)
     pairs.append(pairs[0])
     return pairs
-    
+
+def attribs_to_vpy(in_attribs):
+    extrude = None
+    rotate = None
+    if 'fsextrude' in in_attribs:
+        extrude = int(in_attribs['fsextrude'])
+    return extrude, rotate
+
 def is_joint(attributes):
     if 'joint' in attributes:
         return True
@@ -20,10 +27,15 @@ def is_joint(attributes):
 def parse_vector(in_vector, in_attribs):
     type = 4
     basePath = path_to_vpy(in_vector)
+    extrude, rotate = attribs_to_vpy(in_attribs)
+    if extrude is None:
+        extrude_vec = vec(0,0,2)
+    else:
+        extrude_vec = vec(0,0,extrude)
     position = in_vector.bbox()
     vecPosition = vec(position[3] - position[0], 0, 0)
-    extrusion(path=[vec(0,0,0), vec(0,0,-0.7)], color=color.cyan, shape=[ basePath ], pos=vecPosition)
-    
+    extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=vecPosition)
+
 def parse_svg(filename):
     paths, attributes, svg_attributes = svg2paths2(filename)
     for p, a in zip(paths, attributes):
@@ -32,17 +44,17 @@ def parse_svg(filename):
             print('Joint at ', p.bbox())
         else:
             parse_vector(p, a)
-            
-            
+
+
 def file_modified(filename):
     if platform.system() == 'Windows':
         return os.path.getmtime(filename)
     else:
         stat = os.stat(filename)
         return stat.st_mtime
-    
-    
-    
+
+
+
 if __name__ == '__main__':
     scene = canvas() # This is needed in Jupyter notebook and lab to make programs easily rerunnable
     scene.background = color.gray(0.8)
@@ -54,19 +66,19 @@ if __name__ == '__main__':
     To zoom, drag with middle button or Alt/Option depressed, or use scroll wheel.
          On a two-button mouse, middle is left + right.
     Touch screen: pinch/extend to zoom, swipe or two-finger rotate.\n"""
-    
+
     filename = 'drawing.svg'
     parse_svg(filename)
-    
+
     modified = file_modified(filename)
-    
+
 
     run = True
 
     def runner(r):
         global run
         run = r.checked
-        
+
     checkbox(bind=runner, text='Run', checked=True)
 
     #scene.waitfor('textures')
@@ -78,9 +90,9 @@ if __name__ == '__main__':
         rate(100)
         if file_modified(filename) > modified:
             print('Modified! Reloading')
-            
+
             modified = file_modified(filename)
-            
+
             for a in scene.objects:
                 print(a)
                 a.visible = False

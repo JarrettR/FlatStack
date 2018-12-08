@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="-137.14286"
+     inkscape:cx="291.75347"
      inkscape:cy="560"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1186"
-     inkscape:window-height="619"
-     inkscape:window-x="2690"
-     inkscape:window-y="202"
+     inkscape:window-width="756"
+     inkscape:window-height="696"
+     inkscape:window-x="601"
+     inkscape:window-y="40"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata5">
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,13 +56,15 @@
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 54.428572,197.21428 8.315476,-21.92261 -17.386906,-6.80358 22.678572,-5.29166 12.095237,29.48214 -18.898809,12.85119 z"
        id="path4518"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       fsextrude="20" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 112.6369,190.41071 12.09524,-27.21428 35.52976,7.55952 2.26786,24.19048 -5.29167,15.11904 -23.43452,-6.80357 5.29167,-15.11905 -12.85119,-4.53571 -9.82738,17.3869 -9.07143,-4.53571 z"
        id="path4520"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccc" />
+       sodipodi:nodetypes="ccccccccccc"
+       fsextrude="2" />
     <path
        style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 73.327379,163.19643 a 5.291666,12.095241 0 0 1 -5.291666,12.09524 5.291666,12.095241 0 0 1 -5.291666,-12.09524 5.291666,12.095241 0 0 1 5.291666,-12.09524 5.291666,12.095241 0 0 1 5.291666,12.09524 z"
