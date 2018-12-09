@@ -3,13 +3,23 @@ from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2path
 import os, platform
 
 def path_to_vpy(inPath):
+    points = 10
     pairs = []
     for segment in inPath:
         if isinstance(segment, Line):
             pairs.append([segment.start.real, segment.start.imag])
+        elif isinstance(segment, CubicBezier) or isinstance(segment, Arc) or isinstance(segment, QuadraticBezier):
+            start = [segment.start.real, segment.start.imag]
+            for i in range(1, points):
+                end = [segment.point(i/points).real, segment.point(i/points).imag]
+                pairs.append(end)
         else:
-            print('Not line!', segment)
-    pairs.append(pairs[0])
+            print('Unknown SVG path type!', segment)
+    try:
+        pairs.append(pairs[0])
+    except:
+        print('No segments in path')
+        
     return pairs
 
 def attribs_to_vpy(in_attribs):
@@ -99,7 +109,12 @@ if __name__ == '__main__':
     Touch screen: pinch/extend to zoom, swipe or two-finger rotate.\n"""
 
     filename = 'drawing.svg'
+    
     parse_svg(filename)
+    #try:
+    #    parse_svg(filename)
+    #except:
+    #    print('SVG Error')
 
     modified = file_modified(filename)
 
@@ -127,7 +142,12 @@ if __name__ == '__main__':
             for a in scene.objects:
                 a.visible = False
                 del a
-            parse_svg(filename)
+                
+            try:
+                parse_svg(filename)
+            except:
+                print('SVG Error')
+                
         if run:
             #scene.camera.rotate(angle=dtheta, axis=vec(0,1,0))
             t += dt
