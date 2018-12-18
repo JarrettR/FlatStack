@@ -14,6 +14,10 @@ Depth in mm of the extrusion.
 
 3 axis of rotation for the final 3D model, in degrees
 
+### fsshowaxis
+
+true/false or 1/0 showing axis of rotation/translation. Default false. Arrows are RGB for XYZ axes.
+
 ### fsposition: x, y, z
 
 3D coordinates for the final 3D model
@@ -24,5 +28,5 @@ Todo
 
 ### fsfixed
 
-Todo
+true/false for fixing object in place. Default false. Causes rotation and translation to be ignored. Undefined behaviour if two fixed object are mated.
 
