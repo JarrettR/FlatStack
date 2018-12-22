@@ -23,32 +23,13 @@ class Layers(object):
             else:
                 layers.append(Layer(p,a))
 
-        self.layers = translate_joints(joints, layers)
+        self.layers = self.translate_joints(joints, layers)
         #for i in range(len(layers)):
         #    self.parse_vector(layers[i][0], layers[i][1])
 
-    def parse_vector(self, in_vector, in_attribs):
-        basePath = path_to_vpy(in_vector)
-        extrude, rotate, rotateMax, position = attribs_to_vpy(in_attribs)
+    def translate_joints(self, joints, layers):
+        return layers
 
-        if extrude is None:
-            extrude_vec = vec(0,0,2)
-        else:
-            extrude_vec = vec(0,0,extrude)
-
-        if rotate is None:
-            rotate_vec = vec(0,0,0)
-        else:
-            rotate_vec = vec(rotate[0],rotate[1],rotate[2])
-
-        if position is None:
-            position = in_vector.bbox()
-            position_vec = vec(position[2] - position[0], 0, 0)
-        else:
-            position_vec = vec(position[0],position[1],position[2])
-
-        extr = extrusion(path=[vec(0,0,0), extrude_vec], color=color.cyan, shape=[ basePath ], pos=position_vec)
-        extr.rotate(angle=rotateMax, axis=rotate_vec)
 
 class Layer(object):
     def __init__(self, loadPath = False, loadAttrib = False):
@@ -57,16 +38,53 @@ class Layer(object):
         if loadPath is not False:
             self.load_path(loadPath)
         if loadAttrib is not False:
-            self.load_attrib(loadAttrib)
+            self.load_attributes(loadAttrib)
 
     def clear(self):
         self.straight_pairs = []
         self.interpolated_pairs = []
-        self.translate = (0,0,0)
-        self.rotate = (0,0,0)
+        self.translate = vec(0,0,0)
+        self.rotate = vec(0,0,0)
+        self.rotationHat = 1
+        self.extrude = 2
+        self.joint = False
 
-    def load_attrib(self, path):
-        return 0
+    @property
+    def position(self):
+        return self.translate
+
+    @property
+    def rotation(self):
+        return self.rotate
+
+    @property
+    def path(self):
+        return self.interpolated_pairs
+
+    @property
+    def depth(self):
+        return self.extrude
+
+    def load_attributes(self, attributes):
+        #todo: abstract more
+        for key in attributes:
+            if key == 'fsjoint':
+                self.joint = True
+            elif key == 'fsextrude':
+                self.extrude = int(attributes[key])
+            elif key == 'fsrotate':
+                #self.rotate = split(attributes[key],',')
+                self.rotate = vec(0,0,1)
+                self.rotationHat = 1
+            elif key == 'fsposition':
+                #self.translate = int(attributes[key])
+                self.translate = vec(0,0,0)
+            elif key == 'fsshowaxis':
+                self.showAxis = attributes[key]
+            elif key == 'fscolour' or key == 'fscolor':
+                self.color = int(attributes[key])
+            elif key == 'fsfixed':
+                self.fixed = attributes[key]
 
     def load_path(self, path):
         straight_pairs = []
@@ -117,6 +135,7 @@ class Scene(object):
         for a in self.scene.objects:
             a.visible = False
             del a
+        self.layers = None
 
     def set_range(self):
         #Todo: range to enclose bounding box of all points
@@ -125,46 +144,12 @@ class Scene(object):
     def rate(self, sceneRate):
         rate(sceneRate)
 
+    def apply(self):
+        for l in self.layers.layers:
+            extr = extrusion(path=[vec(0,0,0), vec(0,0,2)], color=color.cyan, shape=[ l.path ], pos=l.position)
+            extr.rotate(angle=l.rotationHat, axis=l.rotation)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)
         self.layers = Layers()
         self.layers.load_layers(paths, attributes)
-
-if __name__ == '__main__':
-
-    modified = file_modified(filename)
-
-
-    run = True
-
-    def runner(r):
-        global run
-        run = r.checked
-
-    checkbox(bind=runner, text='Run', checked=True)
-
-    #scene.waitfor('textures')
-
-    t = 0
-    dt = 0.01
-    dtheta = 0.001
-    while True:
-        rate(100)
-        if file_modified(filename) > modified:
-            print('Modified! Reloading')
-
-            modified = file_modified(filename)
-
-            for a in scene.objects:
-                a.visible = False
-                del a
-
-            try:
-                parse_svg(filename)
-            except:
-                print('SVG Error')
-
-        if run:
-            #scene.camera.rotate(angle=dtheta, axis=vec(0,1,0))
-            t += dt

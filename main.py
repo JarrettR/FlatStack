@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     filename = 'drawing.svg'
     scene.load_svg(filename)
+    scene.apply()
 
     #try:
     #    scene.parse_svg(filename)
@@ -34,5 +35,6 @@ if __name__ == '__main__':
 
             try:
                 scene.load_svg(filename)
+                scene.apply()
             except:
                 print('SVG Error')
