@@ -1,4 +1,4 @@
-from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians
+from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
 import os, platform
 
@@ -48,6 +48,7 @@ class Layer(object):
         self.rotationHat = 1
         self.extrude = 2
         self.joint = False
+        self.showAxis = False
 
     @property
     def position(self):
@@ -73,18 +74,26 @@ class Layer(object):
             elif key == 'fsextrude':
                 self.extrude = int(attributes[key])
             elif key == 'fsrotate':
-                #self.rotate = split(attributes[key],',')
-                self.rotate = vec(0,0,1)
+                self.rotate = self.str_to_vec(attributes[key])
+                self.rotate.x = radians(self.rotate.x)
+                self.rotate.y = radians(self.rotate.y)
+                self.rotate.z = radians(self.rotate.z)
+                #self.rotate = vec(0,0,1)
                 self.rotationHat = 1
             elif key == 'fsposition':
-                #self.translate = int(attributes[key])
-                self.translate = vec(0,0,0)
+                self.translate = self.str_to_vec(attributes[key])
+                #self.translate = vec(0,0,0)
             elif key == 'fsshowaxis':
-                self.showAxis = attributes[key]
+                self.showAxis = bool(attributes[key])
             elif key == 'fscolour' or key == 'fscolor':
                 self.color = int(attributes[key])
             elif key == 'fsfixed':
                 self.fixed = attributes[key]
+
+    def str_to_vec(self, inputStr):
+        elements = inputStr.split(',')
+        outVec = vec(int(elements[0]), int(elements[1]), int(elements[2]))
+        return outVec
 
     def load_path(self, path):
         straight_pairs = []
@@ -146,8 +155,25 @@ class Scene(object):
 
     def apply(self):
         for l in self.layers.layers:
-            extr = extrusion(path=[vec(0,0,0), vec(0,0,2)], color=color.cyan, shape=[ l.path ], pos=l.position)
-            extr.rotate(angle=l.rotationHat, axis=l.rotation)
+            extr = extrusion(path=[vec(0,0,0), vec(0,0,l.depth)],
+                color=color.cyan,
+                shape=[ l.path ],
+                pos=l.position,angle=l.rotation.mag, axis=l.rotation.hat)
+            print(l.rotation.mag, l.rotation.hat)
+            if l.showAxis:
+                self.draw_axis(l)
+
+    def draw_axis(self, layer):
+        rArrow = arrow(axis=layer.rotation,
+                color=color.red,
+                length=50,
+                pos=layer.position)
+        #print(layer.rotation)
+        #print(layer.position)
+        #rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=layer.position)
+        #rArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=layer.position)
+        #rArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=layer.position)
+        #rArrow.rotate(angle=layer.rotationHat, axis=layer.rotation)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)
