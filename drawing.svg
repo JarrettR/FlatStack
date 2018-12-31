@@ -25,17 +25,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="381.68729"
-     inkscape:cy="564.8893"
+     inkscape:zoom="1.4"
+     inkscape:cx="529.98449"
+     inkscape:cy="379.10623"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="756"
-     inkscape:window-height="696"
-     inkscape:window-x="601"
+     inkscape:window-width="958"
+     inkscape:window-height="1128"
+     inkscape:window-x="953"
      inkscape:window-y="40"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -58,8 +58,8 @@
        id="path4518"
        inkscape:connector-curvature="0"
        fsextrude="20"
-       fsrotate="0,0,2"
-       fsposition="91,0,0"
+       fsrotate="0,10,0.1"
+       fsposition="41,0,0"
        fsshowaxis="true" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -83,10 +83,10 @@
        fsjoint="1" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 100.54167,114.81548 81.642856,108.76785 87.690475,98.940476 77.863093,95.160713 71.059523,110.27976 57.452381,99.696427 83.910714,55.095237 83.15476,72.482143 96.00595,71.726189 95.249999,85.333334 110.36905,78.529761 108.10119,89.113094 128.5119,72.482143 Z"
+       d="M 100.54167,114.81548 81.642856,108.76785 87.690475,98.940476 77.863093,95.160713 71.059523,110.27976 57.452381,99.696427 83.910714,55.095237 83.15476,72.482143 c 0,0 9.811961,-3.785298 12.85119,-0.755954 3.217408,3.206944 -0.755951,13.607145 -0.755951,13.607145 l 15.119051,-6.803573 -2.26786,10.583333 20.41071,-16.630951 z"
        id="path830"
        inkscape:connector-curvature="0"
-       fsshowaxis="true"
-       fsposition="5,25,30" />
+       fsposition="5,25,30"
+       sodipodi:nodetypes="ccccccccsccccc" />
   </g>
 </svg>

@@ -1,5 +1,22 @@
 # FlatStack
 
+Better documentation forthcoming.
+
+![interface](interface.png)
+
+FlatStack is a flatpack design system, intended to leverage the strength of existing vector software.
+
+This project comes from frequently designing complex 3D assemblies to be laser cut. Using standard CAD packages like Fusion 360 or SolidWorks is annoying, because the sketch or drawing capabilities are not their primary purpose, and a little bit clunky as a result.
+
+Proper vector software, like Inkscape or Illustrator, however, are fantastic.
+
+
+This is an attempt at turning them into a CAD package of sorts, for flatpack designs.
+
+Keeping the 3D view in one window off to the side, it will continuously update the 3D assembly as you draw the 2D profiles in your vector software of choice.
+
+
+
 ## SVG XML Commands
 
 ### fsjoint: id

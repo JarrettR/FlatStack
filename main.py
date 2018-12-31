@@ -36,5 +36,6 @@ if __name__ == '__main__':
             try:
                 scene.load_svg(filename)
                 scene.apply()
-            except:
-                print('SVG Error')
+            except Exception as e:
+                print(e)
+                print(str(e))

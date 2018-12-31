@@ -13,7 +13,7 @@ class Layers(object):
         joints = {}
         layers = []
         for p, a in zip(paths, attributes):
-            #print(a)
+            print(a)
             if 'fsjoint' in a:
                 print('Joint at ', p.bbox())
                 if a['fsjoint'] in joints:
@@ -92,12 +92,14 @@ class Layer(object):
 
     def str_to_vec(self, inputStr):
         elements = inputStr.split(',')
-        outVec = vec(int(elements[0]), int(elements[1]), int(elements[2]))
+        outVec = vec(float(elements[0]), float(elements[1]), float(elements[2]))
         return outVec
 
     def load_path(self, path):
         straight_pairs = []
         interpolated_pairs = []
+        #Interpolated number of points:
+        points = 10
 
         for segment in path:
             if isinstance(segment, Line):
@@ -155,24 +157,25 @@ class Scene(object):
 
     def apply(self):
         for l in self.layers.layers:
-            extr = extrusion(path=[vec(0,0,0), vec(0,0,l.depth)],
+            extr = extrusion(path=[vec(0,0,0), vec(0,l.depth,0)],
                 color=color.cyan,
                 shape=[ l.path ],
                 pos=l.position,angle=l.rotation.mag, axis=l.rotation.hat)
-            print(l.rotation.mag, l.rotation.hat)
+            print(l.rotation.mag, l.rotation.hat, l.rotation)
+            print('-', extr._axis, extr.attrs)
             if l.showAxis:
                 self.draw_axis(l)
 
     def draw_axis(self, layer):
-        rArrow = arrow(axis=layer.rotation,
-                color=color.red,
-                length=50,
+        mArrow = arrow(angle=layer.rotation.mag, axis=layer.rotation.hat,
+                color=color.orange,
+                length=40,
                 pos=layer.position)
         #print(layer.rotation)
         #print(layer.position)
-        #rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=layer.position)
-        #rArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=layer.position)
-        #rArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=layer.position)
+        rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=layer.position, shaftwidth=1)
+        gArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=layer.position, shaftwidth=1)
+        bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=layer.position, shaftwidth=1)
         #rArrow.rotate(angle=layer.rotationHat, axis=layer.rotation)
 
     def load_svg(self, filename):
