@@ -1,5 +1,5 @@
 from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
-from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
+from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path, path_encloses_pt
 import os, platform
 
 class Layers(object):
@@ -13,7 +13,7 @@ class Layers(object):
         joints = {}
         layers = []
         for p, a in zip(paths, attributes):
-            print(a)
+            #print(a)
             if 'fsjoint' in a:
                 print('Joint at ', p.bbox())
                 if a['fsjoint'] in joints:
@@ -28,6 +28,20 @@ class Layers(object):
         #    self.parse_vector(layers[i][0], layers[i][1])
 
     def translate_joints(self, joints, layers):
+        #print(joints)
+        for jointlayer in joints:
+            print(jointlayer)
+            for jp in joints[jointlayer]:
+                print('Jointpath')
+                box = jp.bbox()
+                opt = complex(box[0] - 10, box[1] - 10)
+                for l in layers:
+                    print(l.name)
+                    #print(l)
+                    for p in l.straight_pairs:
+
+                        #print(p, opt, jp)
+                        print(path_encloses_pt(complex(p[0],p[1]), opt, jp), complex(p[0],p[1]), opt)
         return layers
 
 
@@ -49,6 +63,7 @@ class Layer(object):
         self.extrude = 2
         self.joint = False
         self.showAxis = False
+        self.id = ''
 
     @property
     def position(self):
@@ -65,6 +80,10 @@ class Layer(object):
     @property
     def depth(self):
         return self.extrude
+
+    @property
+    def name(self):
+        return self.id
 
     def load_attributes(self, attributes):
         #todo: abstract more
@@ -89,6 +108,8 @@ class Layer(object):
                 self.color = int(attributes[key])
             elif key == 'fsfixed':
                 self.fixed = attributes[key]
+            elif key == 'id':
+                self.id = attributes[key]
 
     def str_to_vec(self, inputStr):
         elements = inputStr.split(',')
