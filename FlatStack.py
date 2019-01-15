@@ -58,8 +58,8 @@ class Layer(object):
         self.straight_pairs = []
         self.interpolated_pairs = []
         self.translate = vec(0,0,0)
-        self.rotate = vec(0,0,0)
-        self.rotationHat = 1
+        self._axis = vec(0,0,0)
+        self._angle = 1
         self.extrude = 2
         self.joint = False
         self.showAxis = False
@@ -70,8 +70,12 @@ class Layer(object):
         return self.translate
 
     @property
-    def rotation(self):
-        return self.rotate
+    def axis(self):
+        return self._axis
+
+    @property
+    def angle(self):
+        return self._angle
 
     @property
     def path(self):
@@ -92,16 +96,15 @@ class Layer(object):
                 self.joint = True
             elif key == 'fsextrude':
                 self.extrude = int(attributes[key])
-            elif key == 'fsrotate':
-                self.rotate = self.str_to_vec(attributes[key])
-                self.rotate.x = radians(self.rotate.x)
-                self.rotate.y = radians(self.rotate.y)
-                self.rotate.z = radians(self.rotate.z)
-                #self.rotate = vec(0,0,1)
-                self.rotationHat = 1
+            elif key == 'fsangle':
+                self._angle = int(attributes[key])
+            elif key == 'fsaxis':
+                self._axis = self.str_to_vec(attributes[key])
+                self._axis.x = radians(self._axis.x)
+                self._axis.y = radians(self._axis.y)
+                self._axis.z = radians(self._axis.z)
             elif key == 'fsposition':
                 self.translate = self.str_to_vec(attributes[key])
-                #self.translate = vec(0,0,0)
             elif key == 'fsshowaxis':
                 self.showAxis = bool(attributes[key])
             elif key == 'fscolour' or key == 'fscolor':
@@ -181,14 +184,12 @@ class Scene(object):
             extr = extrusion(path=[vec(0,0,0), vec(0,l.depth,0)],
                 color=color.cyan,
                 shape=[ l.path ],
-                pos=l.position,angle=l.rotation.mag, axis=l.rotation.hat)
-            print(l.rotation.mag, l.rotation.hat, l.rotation)
-            print('-', extr._axis, extr.attrs)
+                pos=l.position,angle=l.angle, axis=l.axis)
             if l.showAxis:
                 self.draw_axis(l)
 
     def draw_axis(self, layer):
-        mArrow = arrow(angle=layer.rotation.mag, axis=layer.rotation.hat,
+        mArrow = arrow(angle=layer.angle, axis=layer.axis,
                 color=color.orange,
                 length=40,
                 pos=layer.position)

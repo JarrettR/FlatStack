@@ -26,14 +26,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="529.98449"
+     inkscape:cx="404.62735"
      inkscape:cy="379.10623"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="958"
-     inkscape:window-height="1128"
-     inkscape:window-x="953"
+     inkscape:window-width="756"
+     inkscape:window-height="696"
+     inkscape:window-x="601"
      inkscape:window-y="40"
      inkscape:window-maximized="0" />
   <metadata
@@ -58,9 +58,10 @@
        id="path4518"
        inkscape:connector-curvature="0"
        fsextrude="20"
-       fsrotate="0,10,0.1"
        fsposition="41,0,0"
-       fsshowaxis="true" />
+       fsshowaxis="true"
+       fsangle="90"
+       fsaxis="0,10,0.1" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 112.6369,190.41071 12.09524,-27.21428 35.52976,7.55952 2.26786,24.19048 -5.29167,15.11904 -23.43452,-6.80357 5.29167,-15.11905 -12.85119,-4.53571 -9.82738,17.3869 -9.07143,-4.53571 z"
