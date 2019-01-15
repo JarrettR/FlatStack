@@ -13,9 +13,7 @@ class Layers(object):
         joints = {}
         layers = []
         for p, a in zip(paths, attributes):
-            #print(a)
             if 'fsjoint' in a:
-                print('Joint at ', p.bbox())
                 if a['fsjoint'] in joints:
                     joints[a['fsjoint']].append(p)
                 else:
@@ -28,21 +26,23 @@ class Layers(object):
         #    self.parse_vector(layers[i][0], layers[i][1])
 
     def translate_joints(self, joints, layers):
-        #print(joints)
         for jointlayer in joints:
-            print(jointlayer)
             for jp in joints[jointlayer]:
-                print('Jointpath')
-                box = jp.bbox()
-                opt = complex(box[0] - 10, box[1] - 10)
                 for l in layers:
                     print(l.name)
                     #print(l)
                     for p in l.straight_pairs:
-
-                        #print(p, opt, jp)
-                        print(path_encloses_pt(complex(p[0],p[1]), opt, jp), complex(p[0],p[1]), opt)
+                        print(self.encloses(p, jp))
         return layers
+        
+    def encloses(self, point, joint):
+        box = joint.bbox()
+        if(point[0] >= box[0]):
+            if(point[0] <= box[1]):
+                if(point[1] >= box[2]):
+                    if(point[1] <= box[3]):
+                        return True;
+        return False
 
 
 class Layer(object):
@@ -193,12 +193,9 @@ class Scene(object):
                 color=color.orange,
                 length=40,
                 pos=layer.position)
-        #print(layer.rotation)
-        #print(layer.position)
         rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=layer.position, shaftwidth=1)
         gArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=layer.position, shaftwidth=1)
         bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=layer.position, shaftwidth=1)
-        #rArrow.rotate(angle=layer.rotationHat, axis=layer.rotation)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)
