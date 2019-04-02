@@ -36,6 +36,7 @@ class Database(object):
                         rotation_axis integer NOT NULL,
                         rotation_mag integer NOT NULL,
                         colour integer,
+                        drawaxis integer,
                         fixed integer NOT NULL
                     ); """
 
@@ -68,12 +69,18 @@ class Database(object):
         else:
             print("Error! Cannot create DB connection.")
 
-    def insert_layer(self, name):
-        sql = ''' INSERT INTO layer(name)
-                  VALUES(?) '''
+    def insert_layer(self, name, position, depth, rotation_axis,
+                    rotation_mag, colour, drawaxis, fixed):
+        sql = ''' INSERT INTO layer(
+                name, position, depth, rotation_axis,
+                rotation_mag, colour, drawaxis, fixed)
+                  VALUES(?,?,?,?,?,?,?,?) '''
         try:
             c = self.conn.cursor()
-            c.execute(sql, (name,))
+            print(name,position, depth, rotation_axis,
+                    rotation_mag, colour, drawaxis, fixed)
+            c.execute(sql, (name,position, depth, rotation_axis,
+                    rotation_mag, colour, drawaxis, fixed))
             self.conn.commit()
         except Error as e:
             print(e)
@@ -95,7 +102,7 @@ class Database(object):
     def insert_joint(self, body1, point1, body2, point2):
         sql = ''' INSERT INTO joint(
                 body1, point1, body2, point2)
-                  VALUES(?,?,?) '''
+                  VALUES(?,?,?,?) '''
 
         try:
             c = self.conn.cursor()

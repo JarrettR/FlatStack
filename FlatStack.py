@@ -1,6 +1,16 @@
 from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
-from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path, path_encloses_pt
+from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
 import os, platform
+from database import Database
+
+class Joint(object):
+    def __init__(self):
+        self.clear()
+
+    def clear(self):
+        self.layers = []
+        self.jointlayers = []
+
 
 class Layers(object):
     def __init__(self):
@@ -26,15 +36,22 @@ class Layers(object):
         #    self.parse_vector(layers[i][0], layers[i][1])
 
     def translate_joints(self, joints, layers):
+        #joint_assoc = {}
+        print(joints)
         for jointlayer in joints:
+            print(jointlayer)
             for jp in joints[jointlayer]:
                 for l in layers:
                     print(l.name)
                     #print(l)
                     for p in l.straight_pairs:
-                        print(self.encloses(p, jp))
+                        if(self.encloses(p, jp)):
+                            print(jointlayer, l.name)
+                            #joint_assoc[jointlayer].append(l.name)
+        #print(joint_assoc)
         return layers
         
+    #Naive bounding box implementation
     def encloses(self, point, joint):
         box = joint.bbox()
         if(point[0] >= box[0]):
@@ -61,6 +78,8 @@ class Layer(object):
         self._axis = vec(0,0,0)
         self._angle = 1
         self.extrude = 2
+        self.color = False
+        self.fixed = False
         self.joint = False
         self.showAxis = False
         self.id = ''
@@ -149,11 +168,17 @@ class Layer(object):
 
         self.straight_pairs = straight_pairs
         self.interpolated_pairs = interpolated_pairs
+        
+    def explode(self):
+        return self.straight_pairs, [self.id, self.translate.x, self.extrude, self._angle,
+                    self._axis.x, self.color, self.showAxis, self.fixed]
 
 
 
 class Scene(object):
     def __init__(self):
+        self.db = Database('flatstack.db')
+        self.db.create_default_tables()
         self.scene = canvas()
         self.scene.background = color.gray(0.8)
         self.scene.forward = vec(0,-0.2,-1)
@@ -201,3 +226,24 @@ class Scene(object):
         paths, attributes, svg_attributes = svg2paths2(filename)
         self.layers = Layers()
         self.layers.load_layers(paths, attributes)
+        
+    def populate_db(self, filename):
+        paths, attributes, svg_attributes = svg2paths2(filename)
+        layers = Layers()
+        #layers.load_layers(paths, attributes)
+        #for l in layers.layers:
+        #    print(l)
+        joints = {}
+        layerlist = []
+        for p, a in zip(paths, attributes):
+            if 'fsjoint' in a:
+                if a['fsjoint'] in joints:
+                    joints[a['fsjoint']].append(p)
+                else:
+                    joints[a['fsjoint']] = [p]
+            else:
+                #hacky. gross.
+                el, ea = Layer(p,a).explode()
+                self.db.insert_layer(ea[0], ea[1], ea[2], ea[3], ea[4], ea[5], ea[6], ea[7])
+
+        #self.layers = self.translate_joints(joints, layers)
