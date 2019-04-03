@@ -31,10 +31,14 @@ class Database(object):
         sql_layer = """ CREATE TABLE IF NOT EXISTS layer (
                         id integer PRIMARY KEY,
                         name text NOT NULL,
-                        position integer NOT NULL,
+                        position_x integer NOT NULL,
+                        position_y integer NOT NULL,
+                        position_z integer NOT NULL,
                         depth integer NOT NULL,
-                        rotation_axis integer NOT NULL,
                         rotation_mag integer NOT NULL,
+                        rotation_axis_x integer NOT NULL,
+                        rotation_axis_y integer NOT NULL,
+                        rotation_axis_z integer NOT NULL,
                         colour integer,
                         drawaxis integer,
                         fixed integer NOT NULL
@@ -69,18 +73,16 @@ class Database(object):
         else:
             print("Error! Cannot create DB connection.")
 
-    def insert_layer(self, name, position, depth, rotation_axis,
-                    rotation_mag, colour, drawaxis, fixed):
+    def insert_layer(self, data):
         sql = ''' INSERT INTO layer(
-                name, position, depth, rotation_axis,
-                rotation_mag, colour, drawaxis, fixed)
-                  VALUES(?,?,?,?,?,?,?,?) '''
+                name, position_x, position_y, position_z,
+                depth, rotation_mag,
+                rotation_axis_x, rotation_axis_y, rotation_axis_z,
+                colour, drawaxis, fixed)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?) '''
         try:
             c = self.conn.cursor()
-            print(name,position, depth, rotation_axis,
-                    rotation_mag, colour, drawaxis, fixed)
-            c.execute(sql, (name,position, depth, rotation_axis,
-                    rotation_mag, colour, drawaxis, fixed))
+            c.execute(sql, data)
             self.conn.commit()
         except Error as e:
             print(e)

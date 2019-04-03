@@ -170,8 +170,11 @@ class Layer(object):
         self.interpolated_pairs = interpolated_pairs
         
     def explode(self):
-        return self.straight_pairs, [self.id, self.translate.x, self.extrude, self._angle,
-                    self._axis.x, self.color, self.showAxis, self.fixed]
+        return self.straight_pairs, [self.id,
+                    self.translate.x, self.translate.y, self.translate.z,
+                    self.extrude, self._angle,
+                    self._axis.x, self._axis.y, self._axis.z,
+                    self.color, self.showAxis, self.fixed]
 
 
 
@@ -244,6 +247,6 @@ class Scene(object):
             else:
                 #hacky. gross.
                 el, ea = Layer(p,a).explode()
-                self.db.insert_layer(ea[0], ea[1], ea[2], ea[3], ea[4], ea[5], ea[6], ea[7])
+                self.db.insert_layer(ea)
 
         #self.layers = self.translate_joints(joints, layers)
