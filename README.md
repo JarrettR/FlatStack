@@ -2,7 +2,7 @@
 
 Better documentation forthcoming.
 
-![interface](interface.png)
+![interface](docs/interface.png)
 
 FlatStack is a flatpack design system, intended to leverage the strength of existing vector software.
 
@@ -29,7 +29,11 @@ Depth in mm of the extrusion.
 
 ### fsrotate: x, y, z
 
-3 axis of rotation for the final 3D model, in degrees
+Not yet implemented: 3 axis of rotation for the final 3D model, in degrees
+
+### fsaxis: x, y, z
+
+Vector of rotation, with respect to (1,0,0)
 
 ### fsposition: x, y, z
 
@@ -39,11 +43,30 @@ Depth in mm of the extrusion.
 
 true/false or 1/0 showing axis of rotation/translation. Default false. Arrows are RGB for XYZ axes.
 
-### fscolor / fscolour: hexrgb
+### fscolor / fscolour
 
-Todo
+Not yet implemented: Hex colour value of 3D object
 
 ### fsfixed
 
 true/false for fixing object in place. Default false. Causes rotation and translation to be ignored. Undefined behaviour if two fixed object are mated.
+
+
+## Understanding coordinates
+
+
+![axis](docs/axis.png)
+
+### Positioning
+
+In the x is red, positive numbers shift the object in direction that the arrow is pointing.
+Y, height, is green.
+Z is blue.
+
+Position is calculated before rotation.
+
+### Rotation
+
+fsaxis default (0,0,0) is effectively (1,0,0).
+So, entering a value of (0,0,1) would shift the X axis into the position of the Z axis, effective spinning the object in the same way a frisbee would spin.
 
