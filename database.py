@@ -84,10 +84,12 @@ class Database(object):
             c = self.conn.cursor()
             c.execute(sql, data)
             self.conn.commit()
+            return c.lastrowid
         except Error as e:
             print(e)
+            
+        return False
 
-        return c.lastrowid
 
     def insert_point(self, id, x, y):
         sql = ''' INSERT INTO point(

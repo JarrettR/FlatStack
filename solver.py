@@ -14,10 +14,6 @@ if __name__ == '__main__':
     scene = Scene()
 
     filename = 'drawing.svg'
-    
-    scene.populate_db(filename)
-    
-    
     scene.load_svg(filename)
     scene.apply()
 
@@ -39,7 +35,6 @@ if __name__ == '__main__':
 
             try:
                 scene.load_svg(filename)
-                scene.populate_db(filename)
                 scene.apply()
             except Exception as e:
                 print(e)
