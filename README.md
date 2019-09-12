@@ -16,6 +16,8 @@ This is an attempt at turning them into a CAD package of sorts, for flatpack des
 Keeping the 3D view in one window off to the side, it will continuously update the 3D assembly as you draw the 2D profiles in your vector software of choice.
 
 
+It is very much incomplete, and very much in development.
+
 
 ## SVG XML Commands
 
@@ -69,4 +71,18 @@ Position is calculated before rotation.
 
 fsaxis default (0,0,0) is effectively (1,0,0).
 So, entering a value of (0,0,1) would shift the X axis into the position of the Z axis, effective spinning the object in the same way a frisbee would spin.
+
+
+
+## Installation
+
+`git clone https://github.com/JarrettR/FlatStack.git`
+
+`cd FlatStack`
+
+`python -m pip install -r requirements.txt`
+
+`python main.py`
+
+If a DLL error occurs on Windows, install the x86 version of the [VS Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
