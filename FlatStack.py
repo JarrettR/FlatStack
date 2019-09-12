@@ -3,7 +3,6 @@ from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2path
 import os, platform
 from database import Database
 from layers import Layers, Layer
-from solver import Solver
 
 class Joint(object):
     def __init__(self):
@@ -66,9 +65,6 @@ class Scene(object):
         paths, attributes, svg_attributes = svg2paths2(filename)
         self.layers = Layers()
         self.layers.load_layers(paths, attributes)
-        
-    def solve(self):
-        what = Solver()
         
     def populate_db(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)

@@ -1,5 +1,6 @@
 from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
+from solver import Solver
 
 
 class Layers(object):
@@ -21,35 +22,11 @@ class Layers(object):
             else:
                 layers.append(Layer(p,a))
 
-        self.layers = self.translate_joints(joints, layers)
+        s = Solver(joints, layers)
+        self.layers = s.solve()
         #for i in range(len(layers)):
         #    self.parse_vector(layers[i][0], layers[i][1])
 
-    def translate_joints(self, joints, layers):
-        #joint_assoc = {}
-        print(joints)
-        for jointlayer in joints:
-            print(jointlayer)
-            for jp in joints[jointlayer]:
-                for l in layers:
-                    print(l.name)
-                    #print(l)
-                    for p in l.straight_pairs:
-                        if(self.encloses(p, jp)):
-                            print(jointlayer, l.name)
-                            #joint_assoc[jointlayer].append(l.name)
-        #print(joint_assoc)
-        return layers
-        
-    #Naive bounding box implementation
-    def encloses(self, point, joint):
-        box = joint.bbox()
-        if(point[0] >= box[0]):
-            if(point[0] <= box[1]):
-                if(point[1] >= box[2]):
-                    if(point[1] <= box[3]):
-                        return True;
-        return False
 
 
 class Layer(object):
