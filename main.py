@@ -39,6 +39,7 @@ if __name__ == '__main__':
 
             try:
                 scene.load_svg(filename)
+                scene.solve()
                 scene.populate_db(filename)
                 scene.apply()
             except Exception as e:
