@@ -42,7 +42,51 @@ class Solver(object):
         #print(joint_assoc)
                 
         print(self.solver.dumps())
+        print(self.solver)
+        print(dir(self.solver))
+        print(dir(kiwisolver.Variable()))
+        print(layers)
+        # print(dir(kiwisolver.Expression())) #needs term
+        # print(dir(kiwisolver.Term()))   #needs variable
+        print(dir(kiwisolver.Term(self.variables['path4518_p3_y'])))
+     
+        print(self.variables)
+        print(self.variables['path4518_p3_y'])
+        print(self.variables['path4518_p3_y'].value())
+        print(self.variables['path4518_p3_x'].value())
+        print(self.variables['path4520_p1_y'])
+        print(self.variables['path4520_p1_y'].value())
+        print(self.variables['path4520_p1_x'].value())
+        self.solver.updateVariables()
+        print(self.variables['path4518_p3_y'])
+        print(self.variables['path4518_p3_y'].value())
+        print(self.variables['path4518_p3_x'].value())
+        print(self.variables['path4520_p1_y'])
+        print(self.variables['path4520_p1_y'].value())
+        print(self.variables['path4520_p1_x'].value())
+        return self.incorporate(self.variables, layers)
+        # return layers
+        
+    def incorporate(self, variables, layers):
+        a = 0
+        for l in layers:
+            print(l.name)
+            #print(l)
+            i = 0
+            for p in l.straight_pairs:
+                # print(l.name, i, p)
+                # self.add_joint(jointlayer, l.name, i, p)
+                layername = l.name + '_p' + str(i) + '_'
+                layernameX = layername + 'x'
+                layernameY = layername + 'y'
+                print(l.name, layernameX, i, p, variables[layernameX].value())
+                #joint_assoc[jointlayer].append(l.name)
+                layers[a].straight_pairs[i][0] = variables[layernameX].value()
+                layers[a].straight_pairs[i][1] = variables[layernameY].value()
+                i += 1
+            a += 1
         return layers
+        
         
     def add_joint(self, jname, lname, pname, p):
 
@@ -113,10 +157,10 @@ class Solver(object):
                 y_constraint = (y == (y_p + (yp - yp_p)))
                 self.solver.addConstraint(x_constraint | "strong")
                 self.solver.addConstraint(y_constraint | "strong")
-                x_p = x
-                y_p = y
-                xp_p = xp
-                yp_p = yp
+            x_p = x
+            y_p = y
+            xp_p = xp
+            yp_p = yp
             i += 1
         return layer
 
