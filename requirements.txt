@@ -1,3 +1,4 @@
 vpython
 svgpathtools
 kiwisolver
+git+https://github.com/allelos/vectors.git
