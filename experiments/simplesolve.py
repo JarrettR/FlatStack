@@ -45,14 +45,14 @@ class Solver(object):
                         i += 1
         #print(joint_assoc)
                 
-        print(self.solver.dumps())
-        print(self.solver)
-        print(dir(self.solver))
-        print(dir(kiwisolver.Variable()))
-        print(layers)
-        # print(dir(kiwisolver.Expression())) #needs term
-        # print(dir(kiwisolver.Term()))   #needs variable
-        print(dir(kiwisolver.Term(self.variables['path4518_p3_y'])))
+        # print(self.solver.dumps())
+        # print(self.solver)
+        # # print(dir(self.solver))
+        # print(dir(kiwisolver.Variable()))
+        # print(layers)
+        # # print(dir(kiwisolver.Expression())) #needs term
+        # # print(dir(kiwisolver.Term()))   #needs variable
+        # print(dir(kiwisolver.Term(self.variables['path4518_p3_y'])))
      
         print(self.variables)
         print(self.variables['path4518_p3_y'])
@@ -83,7 +83,7 @@ class Solver(object):
                 layername = l.name + '_p' + str(i) + '_'
                 layernameX = layername + 'x'
                 layernameY = layername + 'y'
-                print(l.name, layernameX, i, p, variables[layernameX].value())
+                print(l.name, layernameX, i, p, variables[layernameX].value(), variables[layernameY].value())
                 #joint_assoc[jointlayer].append(l.name)
                 layers[a].straight_pairs[i][0] = variables[layernameX].value()
                 layers[a].straight_pairs[i][1] = variables[layernameY].value()

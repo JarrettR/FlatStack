@@ -3,6 +3,7 @@ from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2path
 import os, platform
 from database import Database
 from layers import Layers, Layer
+from vectors import Point, Vector
 
 class Joint(object):
     def __init__(self):
@@ -48,18 +49,22 @@ class Scene(object):
             extr = extrusion(path=[vec(0,0,0), vec(0,l.depth,0)],
                 color=color.cyan,
                 shape=[ l.path ],
-                pos=l.position,angle=l.angle, axis=l.axis)
+                pos=self.vector_to_vec(l.position),
+                angle=l.angle,
+                axis=self.vector_to_vec(l.axis))
             if l.showAxis:
                 self.draw_axis(l)
 
     def draw_axis(self, layer):
-        mArrow = arrow(angle=layer.angle, axis=layer.axis,
+        position = self.vector_to_vec(layer.position)
+        mArrow = arrow(angle=layer.angle,
+                axis=self.vector_to_vec(layer.axis),
                 color=color.orange,
                 length=40,
-                pos=layer.position)
-        rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=layer.position, shaftwidth=1)
-        gArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=layer.position, shaftwidth=1)
-        bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=layer.position, shaftwidth=1)
+                pos=position)
+        rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=position, shaftwidth=1)
+        gArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=position, shaftwidth=1)
+        bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=position, shaftwidth=1)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)
@@ -86,3 +91,6 @@ class Scene(object):
                 self.db.insert_layer(ea)
 
         #self.layers = self.translate_joints(joints, layers)
+        
+    def vector_to_vec(self, inVec):
+        return vec(inVec.to_points()[0], inVec.to_points()[1], inVec.to_points()[2])

@@ -1,6 +1,8 @@
-from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
+# from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
 from solver import Solver
+
+from vectors import Point, Vector
 
 
 class Layers(object):
@@ -41,8 +43,8 @@ class Layer(object):
     def clear(self):
         self.straight_pairs = []
         self.interpolated_pairs = []
-        self.translate = vec(0,0,0)
-        self._axis = vec(0,0,0)
+        self.translate = Vector(0,0,0)
+        self._axis = Vector(0,0,0)
         self._angle = 1
         self.extrude = 2
         self.color = False
@@ -86,9 +88,9 @@ class Layer(object):
                 self._angle = int(attributes[key])
             elif key == 'fsaxis':
                 self._axis = self.str_to_vec(attributes[key])
-                self._axis.x = radians(self._axis.x)
-                self._axis.y = radians(self._axis.y)
-                self._axis.z = radians(self._axis.z)
+                # self._axis.x = radians(self._axis.x)
+                # self._axis.y = radians(self._axis.y)
+                # self._axis.z = radians(self._axis.z)
             elif key == 'fsposition':
                 self.translate = self.str_to_vec(attributes[key])
             elif key == 'fsshowaxis':
@@ -102,7 +104,7 @@ class Layer(object):
 
     def str_to_vec(self, inputStr):
         elements = inputStr.split(',')
-        outVec = vec(float(elements[0]), float(elements[1]), float(elements[2]))
+        outVec = Vector(float(elements[0]), float(elements[1]), float(elements[2]))
         return outVec
 
     def load_path(self, path):
