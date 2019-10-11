@@ -45,6 +45,10 @@ Vector of rotation, with respect to (1,0,0)
 
 true/false or 1/0 showing axis of rotation/translation. Default false. Arrows are RGB for XYZ axes.
 
+### fsshowpoints
+
+true/false or 1/0 showing vector points. Default false.
+
 ### fscolor / fscolour
 
 Not yet implemented: Hex colour value of 3D object

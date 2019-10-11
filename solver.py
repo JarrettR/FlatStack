@@ -35,9 +35,16 @@ class Solver(object):
             x = (point[0] - origin[0]) + translate_x
             y = (point[1] - origin[1]) + translate_y
             z =  translate_z
+            self.point_transform(x, y, z, 0)
             
     def point_transform(self, x, y, z, axis):
-        #Transform from rotation axis 
+        #Transform from rotation axis
+        base = Vector(1,0,0)
+        pnt = Vector(x,y,z)
+        an = base.angle(pnt)
+        print('a - ', base)
+        print('b - ', pnt)
+        print('c - ', an)
     
     def find_origin(self, layer):
         max_x = 0

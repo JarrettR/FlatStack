@@ -1,4 +1,4 @@
-from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
+from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, sphere, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
 import os, platform
 from database import Database
@@ -54,6 +54,8 @@ class Scene(object):
                 axis=self.vector_to_vec(l.axis))
             if l.showAxis:
                 self.draw_axis(l)
+            if l.showPoints:
+                self.draw_points(l)
 
     def draw_axis(self, layer):
         position = self.vector_to_vec(layer.position)
@@ -65,6 +67,11 @@ class Scene(object):
         rArrow = arrow(axis=vec(1,0,0), color=color.red, length=50, pos=position, shaftwidth=1)
         gArrow = arrow(axis=vec(0,1,0), color=color.green, length=50, pos=position, shaftwidth=1)
         bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=position, shaftwidth=1)
+
+    def draw_points(self, layer):
+        print(layer.path)
+        for p in layer.path:
+            pBall = sphere(pos=vec(p[0],0, p[1]), radius=5)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)

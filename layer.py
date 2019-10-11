@@ -1,5 +1,5 @@
 # from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
-from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path
+from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path, paths2svg
 
 from vectors import Point, Vector
 
@@ -16,13 +16,14 @@ class Layer(object):
         self.straight_pairs = []
         self.interpolated_pairs = []
         self.translate = Vector(0,0,0)
-        self._axis = Vector(0,0,0)
-        self._angle = 1
+        self._axis = Vector(1,0,0)
+        self._angle = 0
         self.extrude = 2
         self.color = False
         self.fixed = False
         self.joint = False
         self.showAxis = False
+        self.showPoints = False
         self.id = ''
 
     @property
@@ -67,6 +68,8 @@ class Layer(object):
                 self.translate = self.str_to_vec(attributes[key])
             elif key == 'fsshowaxis':
                 self.showAxis = bool(attributes[key])
+            elif key == 'fsshowpoints':
+                self.showPoints = bool(attributes[key])
             elif key == 'fscolour' or key == 'fscolor':
                 self.color = int(attributes[key])
             elif key == 'fsfixed':
@@ -78,17 +81,22 @@ class Layer(object):
         elements = inputStr.split(',')
         outVec = Vector(float(elements[0]), float(elements[1]), float(elements[2]))
         return outVec
+        
 
     def load_path(self, path):
         straight_pairs = []
         interpolated_pairs = []
         #Interpolated number of points:
         points = 10
-
+        
+        #Bounding box to find path origin and translate to global origin
+        xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
+        origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
+        
         for segment in path:
             if isinstance(segment, Line):
-                straight_pairs.append([segment.start.real, segment.start.imag])
-                interpolated_pairs.append([segment.start.real, segment.start.imag])
+                straight_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
+                interpolated_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
             elif isinstance(segment, CubicBezier) or isinstance(segment, Arc) or isinstance(segment, QuadraticBezier):
                 start = [segment.start.real, segment.start.imag]
                 straight_pairs.append(start)
