@@ -25,6 +25,7 @@ class Layer(object):
         self.showAxis = False
         self.showPoints = False
         self.id = ''
+        self.volume = []
 
     @property
     def position(self):

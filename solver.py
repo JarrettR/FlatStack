@@ -5,6 +5,8 @@ to tranform the 2D points into three dimensional space
 
 from layer import Layer
 from vectors import Point, Vector
+from svgpathtools import paths2svg
+
 
 
 class Solver(object):
@@ -16,12 +18,12 @@ class Solver(object):
         joints = self.joints
         layers = self.layers
         
-        for layer in layers:
+        for i, layer in enumerate(layers):
             if solveJointless == False and layer.joint == False:
                 print("Solving for ", layer.id)
-                self.solve_layer(layer)
+                layers[i].volume = self.solve_layer(layer)
             elif layer.joint == True:
-                print("Solving for ", layer.id)
+                print("Joint ", layer.id)
         
         return layers
         
@@ -30,12 +32,15 @@ class Solver(object):
         translate_x = layer.translate.x
         translate_y = layer.translate.y
         translate_z = layer.translate.z
+        solved = []
         for i, point in enumerate(layer.straight_pairs):
             print(point)
             x = (point[0] - origin[0]) + translate_x
             y = (point[1] - origin[1]) + translate_y
             z =  translate_z
-            self.point_transform(x, y, z, 0)
+            solved.append(self.point_transform(x, y, z, 0))
+        return solved
+            
             
     def point_transform(self, x, y, z, axis):
         #Transform from rotation axis
@@ -45,8 +50,14 @@ class Solver(object):
         print('a - ', base)
         print('b - ', pnt)
         print('c - ', an)
+        return pnt
     
     def find_origin(self, layer):
+        #Bounding box to find path origin and translate to global origin
+        # xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
+        # origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
+        # return origin
+        
         max_x = 0
         max_y = 0
         min_x = 0
@@ -69,5 +80,5 @@ class Solver(object):
                     max_y = point[1]
                 elif point[1] < min_y:
                     min_y = point[1]
-            print(point)
+            # print(point)
         return [(max_x + min_x) / 2, (max_y + min_y) / 2]

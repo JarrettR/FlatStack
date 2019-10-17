@@ -69,9 +69,13 @@ class Scene(object):
         bArrow = arrow(axis=vec(0,0,1), color=color.blue, length=50, pos=position, shaftwidth=1)
 
     def draw_points(self, layer):
-        print(layer.path)
-        for p in layer.path:
-            pBall = sphere(pos=vec(p[0],p[1], 0), radius=5)
+        position = self.vector_to_vec(layer.position)
+        # print(layer.path)
+        # for p in layer.path:
+            # pBall = sphere(pos=(vec(p[0],p[1], 0) + position), radius=5)
+        for v in layer.volume:
+            p = self.vector_to_vec(v)
+            pBall = sphere(pos=p, radius=5)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)

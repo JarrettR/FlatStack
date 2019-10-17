@@ -13,7 +13,7 @@ def file_modified(filename):
 if __name__ == '__main__':
     scene = Scene()
 
-    filename = 'simplersolve.svg'
+    filename = 'simplesolve.svg'
     
     scene.populate_db(filename)
     
