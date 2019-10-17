@@ -49,7 +49,7 @@ class Scene(object):
             extr = extrusion(path=[vec(0,0,l.depth), vec(0,0,0)],
                 color=color.cyan,
                 shape=[ l.path ],
-                pos=self.vector_to_vec(l.position),
+                pos=(self.vector_to_vec(l.position) + vec(0,0,l.depth / 2)),
                 angle=l.angle,
                 axis=self.vector_to_vec(l.axis))
             if l.showAxis:
