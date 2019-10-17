@@ -46,7 +46,7 @@ class Scene(object):
 
     def apply(self):
         for l in self.layers.layers:
-            extr = extrusion(path=[vec(0,0,0), vec(0,l.depth,0)],
+            extr = extrusion(path=[vec(0,0,l.depth), vec(0,0,0)],
                 color=color.cyan,
                 shape=[ l.path ],
                 pos=self.vector_to_vec(l.position),
@@ -71,7 +71,7 @@ class Scene(object):
     def draw_points(self, layer):
         print(layer.path)
         for p in layer.path:
-            pBall = sphere(pos=vec(p[0],0, p[1]), radius=5)
+            pBall = sphere(pos=vec(p[0],p[1], 0), radius=5)
 
     def load_svg(self, filename):
         paths, attributes, svg_attributes = svg2paths2(filename)

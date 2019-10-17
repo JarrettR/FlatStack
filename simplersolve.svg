@@ -35,7 +35,7 @@
      inkscape:window-height="696"
      inkscape:window-x="601"
      inkscape:window-y="40"
-     inkscape:window-maximized="0" />
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -54,16 +54,15 @@
      id="layer1">
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 54,164 h 14.017857 l 12.113094,29 H 54 Z"
+       d="M 54,164 65.191811,151.7538 80.130951,193 H 54 Z"
        id="path4518"
        inkscape:connector-curvature="0"
        fsextrude="20"
        fsposition="0,0,0"
        fsshowaxis="true"
-       fsangle="100"
-       fsaxis="0,0,1"
        sodipodi:nodetypes="ccccc"
-       fsshowpoints="true" />
+       fsshowpoints="true"
+       fsaxiss="0,0,1" />
     <path
        style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 86.725059,190.79454 a 5.291666,12.095241 0 0 1 -5.291666,12.09524 5.291666,12.095241 0 0 1 -5.291666,-12.09524 5.291666,12.095241 0 0 1 5.291666,-12.09524 5.291666,12.095241 0 0 1 5.291666,12.09524 z"
