@@ -35,16 +35,16 @@ class Solver(object):
         solved = []
         for i, point in enumerate(layer.straight_pairs):
             print(point)
-            x = (point[0] - origin[0]) + translate_x
-            y = (point[1] - origin[1]) + translate_y
-            z =  translate_z
+            x = (point[0] - origin[0])# + translate_x
+            y = (point[1] - origin[1])# + translate_y
+            z =  0#translate_z
             solved.append(self.point_transform(x, y, z, 0))
         return solved
             
             
     def point_transform(self, x, y, z, axis):
         #Transform from rotation axis
-        base = Vector(1,0,0)
+        base = Vector(0,1,0)
         pnt = Vector(x,y,z)
         an = base.angle(pnt)
         print('a - ', base)

@@ -1,5 +1,6 @@
 # from vpython import canvas, color, curve, vec, extrusion, checkbox, rate, radians, arrow, radians
 from svgpathtools import Path, Line, QuadraticBezier, CubicBezier, Arc, svg2paths2, parse_path, paths2svg
+from svgpathtools.path import rotate
 
 from vectors import Point, Vector
 
@@ -7,10 +8,10 @@ class Layer(object):
     def __init__(self, loadPath = False, loadAttrib = False):
         self.clear()
         self.interpolation_points = 10
-        if loadPath is not False:
-            self.load_path(loadPath)
         if loadAttrib is not False:
             self.load_attributes(loadAttrib)
+        if loadPath is not False:
+            self.load_path(loadPath)
 
     def clear(self):
         self.straight_pairs = []
@@ -90,6 +91,9 @@ class Layer(object):
         #Interpolated number of points:
         points = 10
         
+        if(self._angle != 0):
+            path = rotate(path, self._angle)
+        
         #Bounding box to find path origin and translate to global origin
         xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
         origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
@@ -118,6 +122,7 @@ class Layer(object):
 
         self.straight_pairs = straight_pairs
         self.interpolated_pairs = interpolated_pairs
+        
         
     def explode(self):
         return self.straight_pairs, [self.id,

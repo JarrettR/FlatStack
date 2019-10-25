@@ -29,9 +29,9 @@ All points of all paths within the area inside the path marked fsjoint will be l
 
 Depth in mm of the extrusion.
 
-### fsrotate: x, y, z
+### fsrotate: degrees
 
-Not yet implemented: 3 axis of rotation for the final 3D model, in degrees
+Degrees of rotation, normal to vector path
 
 ### fsaxis: x, y, z
 
@@ -69,7 +69,7 @@ In the x is red, positive numbers shift the object in direction that the arrow i
 Y, height, is green.
 Z is blue.
 
-Position is calculated before rotation.
+Position is calculated after rotation.
 
 ### Rotation
 
@@ -88,5 +88,5 @@ So, entering a value of (0,0,1) would shift the X axis into the position of the 
 
 `python main.py`
 
-If a DLL error occurs on Windows, install the x86 version of the [VS Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+If a DLL error occurs on Windows, install the x86 version of the [VC Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
