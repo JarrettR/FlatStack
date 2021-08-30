@@ -380,6 +380,7 @@ class Solver(object):
         self.layers = layers
         self.solver = GeometricProblem(dimension=3)
         self.variables = {}
+        self.connectedJoints = {}
 
     def solve(self):
         joints = self.joints
@@ -389,6 +390,40 @@ class Solver(object):
         # for l in layers:
             #Todo: check that shape actually needs constraints before defining
             # l = self.define_shape(l)
+        for l in layers:
+            straight_pairs = []
+            [straight_pairs.append(x) for x in l.straight_pairs if x not in straight_pairs]
+
+
+            #Need at least 3 points to calculate plane
+            if straight_pairs < 3:
+                pass
+            #print(l)
+            p_p = []
+            p_ln = ''
+            i = 0
+            for p in straight_pairs:
+                # print(p)
+                #path4581_p1
+                layername = l.name + '_p' + str(i)
+                #rigid objects
+                print('df', layername)
+                self.solver.add_point(layername, vector(p + [0.0]))
+                if i > 0:
+                    d = distance_2p(vector(p), vector(p_p))
+                    self.solver.add_constraint(DistanceConstraint(layername,p_ln, d))
+                    # problem.add_constraint(AngleConstraint('v3', 'v1', 'v2',
+                    #     angle_3p(problem.get_point('v3'), problem.get_point('v1'), problem.get_point('v2'))
+                    # ))
+                p_p = p
+                p_ln  = layername
+                i += 1
+
+            #End to index 0
+            p = straight_pairs[0]
+            layername = l.name + '_p0'
+            d = distance_2p(vector(p), vector(p_p))
+            self.solver.add_constraint(DistanceConstraint(layername,p_ln, d))
 
             #Todo: Finish / test
             # if l.fixed == True:
@@ -401,27 +436,49 @@ class Solver(object):
                 for l in layers:
                     print(l.name)
                     #Eliminate duplicates
-                    list
                     straight_pairs = []
                     [straight_pairs.append(x) for x in l.straight_pairs if x not in straight_pairs]
-                    # straight_pairs = list(dict.fromkeys(l.straight_pairs))
+
+
                     #Need at least 3 points to calculate plane
                     if straight_pairs < 3:
                         pass
                     #print(l)
+                    p_p = []
+                    p_ln = ''
                     i = 0
                     for p in straight_pairs:
                         # print(p)
+                        #path4581_p1
+                        layername = l.name + '_p' + str(i)
+
+
+                        #joint associations
                         if(self.encloses(p, jp)):
                             print(jointlayer, l.name, i, p)
-                            self.add_joint(jointlayer, l.name, i, p)
+                            self.add_joint(jointlayer, layername)
                             #joint_assoc[jointlayer].append(l.name)
+                        p_p = p
+                        p_ln  = layername
                         i += 1
 
-    def add_joint(self, jname, lname, pname, p):
+                    #Connected joints
+                    # p.append(0.0)
+            print(self.connectedJoints)
+            for n in self.connectedJoints:
+                #todo more than two
+                j = self.connectedJoints[n]
+                print(j)
+                self.solver.add_constraint(DistanceConstraint(j[0], j[1], 0.0))
 
-        #path4581_p1_x
-        layername = lname + '_p' + str(pname) + '_'
+
+    def add_joint(self, jname, layername):
+
+        if jname in self.connectedJoints:
+            self.connectedJoints[jname].append(layername)
+        else:
+            self.connectedJoints[jname] = [layername]
+        # self.solver.add_point(layername, vector(p))
 
     #Naive bounding box implementation
     def encloses(self, point, joint):
@@ -433,7 +490,33 @@ class Solver(object):
                         return True;
         return False
 
-
+    def test(self):
+        """Test solver on a given problem"""
+        problem = self.solver
+        #diag_select(".*")
+        print "problem:"
+        print problem
+        print "Solving..."
+        solver = GeometricSolver(problem)
+        print "...done"
+        print "drplan:"
+        print solver.dr
+        print "top-level rigids:",list(solver.dr.top_level())
+        result = solver.get_result()
+        print "result:"
+        print result
+        print "result is",result.flag, "with", len(result.solutions),"solutions"
+        check = True
+        if len(result.solutions) == 0:
+            check = False
+        diag_select("(GeometricProblem.verify)|(satisfied)")
+        for sol in result.solutions:
+            print "solution:",sol
+            check = check and problem.verify(sol)
+        if check:
+            print "all solutions valid"
+        else:
+            print "INVALID"
 
 class Layer(object):
     def __init__(self, loadPath = False, loadAttrib = False):
@@ -569,5 +652,6 @@ if __name__ == '__main__':
 
     s = Solver(joints, layers)
     s.solve()
+    s.test()
 
     # test3d()
