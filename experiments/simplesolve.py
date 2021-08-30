@@ -15,26 +15,29 @@ class Solver(object):
         self.layers = layers
         self.solver = kiwisolver.Solver()
         self.variables = {}
-        
+
     def solve(self):
         joints = self.joints
         layers = self.layers
-        
-        
-        for l in layers:
+
+
+        # for l in layers:
             #Todo: check that shape actually needs constraints before defining
-            l = self.define_shape(l)
-            
+            # l = self.define_shape(l)
+
             #Todo: Finish / test
-            if l.fixed == True:
-                self.add_fixed(l)
-        
+            # if l.fixed == True:
+            #     self.add_fixed(l)
+
         print(joints)
         for jointlayer in joints:
             print(jointlayer)
             for jp in joints[jointlayer]:
                 for l in layers:
                     print(l.name)
+                    #Need at least 3 points to calculate plane
+                    if l.straight_pairs < 3:
+                        pass
                     #print(l)
                     i = 0
                     for p in l.straight_pairs:
@@ -44,7 +47,7 @@ class Solver(object):
                             #joint_assoc[jointlayer].append(l.name)
                         i += 1
         #print(joint_assoc)
-                
+
         # print(self.solver.dumps())
         # print(self.solver)
         # # print(dir(self.solver))
@@ -53,7 +56,7 @@ class Solver(object):
         # # print(dir(kiwisolver.Expression())) #needs term
         # # print(dir(kiwisolver.Term()))   #needs variable
         # print(dir(kiwisolver.Term(self.variables['path4518_p3_y'])))
-     
+
         print(self.variables)
         print(self.variables['path4518_p3_y'])
         print(self.variables['path4518_p3_y'].value())
@@ -70,7 +73,7 @@ class Solver(object):
         print(self.variables['path4520_p1_x'].value())
         return self.incorporate(self.variables, layers)
         # return layers
-        
+
     def incorporate(self, variables, layers):
         a = 0
         for l in layers:
@@ -90,8 +93,8 @@ class Solver(object):
                 i += 1
             a += 1
         return layers
-        
-        
+
+
     def add_joint(self, jname, lname, pname, p):
 
         #path4581_p1_x
@@ -102,7 +105,7 @@ class Solver(object):
         # ly = kiwisolver.Variable(layernameY)
         lx = self.variables[layernameX]
         ly = self.variables[layernameY]
-        
+
         jointname = 'joint_' + str(jname) + '_'
         jointnameX = jointname + 'x'
         jointnameY = jointname + 'y'
@@ -114,17 +117,17 @@ class Solver(object):
         else:
             jx = self.variables[jointnameX]
             jy = self.variables[jointnameY]
-        
+
         self.solver.addConstraint((lx == jx) | strength_joint)
         self.solver.addConstraint((ly == jy) | strength_joint)
-            
-            
-            
+
+
+
     #Todo: only constrain first point to global coordinate
     #Or: constrain bounding box to also fix rotation
     def add_fixed(self, layer):
         i = 0
-        
+
         for p in layer.straight_pairs:
             #path4581_p1_x
             name = layer.name + '_p' + str(i) + '_'
@@ -136,15 +139,15 @@ class Solver(object):
             self.solver.addConstraint((y == p[1]) | strength_define)
             i += 1
         return layer
-            
-    # Give points relative constraints to previous point 
+
+    # Give points relative constraints to previous point
     def define_shape(self, layer):
         i = 0
         x_p = 0
         y_p = 0
         xp_p = 0.0
         yp_p = 0.0
-        
+
         for p in layer.straight_pairs:
             #path4581_p1_x
             name = layer.name + '_p' + str(i) + '_'
@@ -168,7 +171,7 @@ class Solver(object):
             i += 1
         return layer
 
-        
+
     #Naive bounding box implementation
     def encloses(self, point, joint):
         box = joint.bbox()
@@ -178,7 +181,7 @@ class Solver(object):
                     if(point[1] <= box[3]):
                         return True;
         return False
-        
+
 
 
 class Layer(object):
@@ -287,7 +290,7 @@ class Layer(object):
 
         self.straight_pairs = straight_pairs
         self.interpolated_pairs = interpolated_pairs
-        
+
     def explode(self):
         return self.straight_pairs, [self.id,
                     self.translate.x, self.translate.y, self.translate.z,
@@ -298,10 +301,10 @@ class Layer(object):
 if __name__ == '__main__':
 
     filename = 'simplesolve.svg'
-    
-    
+
+
     paths, attributes, svg_attributes = svg2paths2(filename)
-    
+
     joints = {}
     layers = []
     for p, a in zip(paths, attributes):
@@ -315,4 +318,3 @@ if __name__ == '__main__':
 
     s = Solver(joints, layers)
     s.solve()
-    
