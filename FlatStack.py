@@ -5,16 +5,6 @@ from database import Database
 from layers import Layers, Layer
 from vectors import Point, Vector
 
-class Joint(object):
-    def __init__(self):
-        self.clear()
-
-    def clear(self):
-        self.layers = []
-        self.jointlayers = []
-
-
-
 class Scene(object):
     def __init__(self):
         self.db = Database('flatstack.db')
@@ -81,27 +71,27 @@ class Scene(object):
         paths, attributes, svg_attributes = svg2paths2(filename)
         self.layers = Layers()
         self.layers.load_layers(paths, attributes)
-        
-    def populate_db(self, filename):
-        paths, attributes, svg_attributes = svg2paths2(filename)
-        layers = Layers()
-        #layers.load_layers(paths, attributes)
-        #for l in layers.layers:
-        #    print(l)
-        joints = {}
-        layerlist = []
-        for p, a in zip(paths, attributes):
-            if 'fsjoint' in a:
-                if a['fsjoint'] in joints:
-                    joints[a['fsjoint']].append(p)
-                else:
-                    joints[a['fsjoint']] = [p]
-            else:
-                #hacky. gross.
-                el, ea = Layer(p,a).explode()
-                self.db.insert_layer(ea)
 
-        #self.layers = self.translate_joints(joints, layers)
-        
+    # def populate_db(self, filename):
+    #     paths, attributes, svg_attributes = svg2paths2(filename)
+    #     layers = Layers()
+    #     #layers.load_layers(paths, attributes)
+    #     #for l in layers.layers:
+    #     #    print(l)
+    #     joints = {}
+    #     layerlist = []
+    #     for p, a in zip(paths, attributes):
+    #         if 'fsjoint' in a:
+    #             if a['fsjoint'] in joints:
+    #                 joints[a['fsjoint']].append(p)
+    #             else:
+    #                 joints[a['fsjoint']] = [p]
+    #         else:
+    #             #hacky. gross.
+    #             el, ea = Layer(p,a).explode()
+    #             self.db.insert_layer(ea)
+
+    #     #self.layers = self.translate_joints(joints, layers)
+
     def vector_to_vec(self, inVec):
         return vec(inVec.to_points()[0], inVec.to_points()[1], inVec.to_points()[2])

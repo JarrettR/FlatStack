@@ -16,6 +16,7 @@ class Layer(object):
     def clear(self):
         self.straight_pairs = []
         self.interpolated_pairs = []
+        self.jointed_pairs = []
         self.translate = Vector(0,0,0)
         self._axis = Vector(1,0,0)
         self._angle = 0
@@ -27,6 +28,7 @@ class Layer(object):
         self.showPoints = False
         self.id = ''
         self.volume = []
+        self.jointed_pairs = []
 
     @property
     def position(self):
@@ -83,25 +85,27 @@ class Layer(object):
         elements = inputStr.split(',')
         outVec = Vector(float(elements[0]), float(elements[1]), float(elements[2]))
         return outVec
-        
+
 
     def load_path(self, path):
         straight_pairs = []
         interpolated_pairs = []
         #Interpolated number of points:
         points = 10
-        
+
         if(self._angle != 0):
             path = rotate(path, self._angle)
-        
+
         #Bounding box to find path origin and translate to global origin
         xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
         origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
-        
+
         for segment in path:
             if isinstance(segment, Line):
-                straight_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
-                interpolated_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
+                straight_pairs.append([segment.start.real, segment.start.imag])
+                interpolated_pairs.append([segment.start.real, segment.start.imag])
+                # straight_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
+                # interpolated_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
             elif isinstance(segment, CubicBezier) or isinstance(segment, Arc) or isinstance(segment, QuadraticBezier):
                 start = [segment.start.real, segment.start.imag]
                 straight_pairs.append(start)
@@ -121,9 +125,16 @@ class Layer(object):
             print('No segments in path')
 
         self.straight_pairs = straight_pairs
+        self.named_pairs = self.define_points(straight_pairs)
         self.interpolated_pairs = interpolated_pairs
-        
-        
+
+    def define_points(self,straight_pairs):
+        points = []
+        prefix = self.id + '_p'
+        for i in range(len(straight_pairs)):
+            points.append([prefix + str(i)] + straight_pairs[i])
+        return points
+
     def explode(self):
         return self.straight_pairs, [self.id,
                     self.translate.x, self.translate.y, self.translate.z,

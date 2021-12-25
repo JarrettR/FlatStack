@@ -14,12 +14,12 @@ if __name__ == '__main__':
     scene = Scene()
 
     filename = 'simplesolve.svg'
-    
-    scene.populate_db(filename)
-    
-    
+
+    # scene.populate_db(filename)
+
+
     scene.load_svg(filename)
-    scene.apply()
+    # scene.apply()
 
     #try:
     #    scene.parse_svg(filename)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
             try:
                 scene.load_svg(filename)
                 scene.populate_db(filename)
-                scene.apply()
+                # scene.apply()
             except Exception as e:
                 print(e)
                 print(str(e))
