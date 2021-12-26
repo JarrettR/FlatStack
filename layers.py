@@ -15,6 +15,7 @@ class Layers(object):
 
     def load_layers(self, paths, attributes):
         joints = {}
+        fixed = []
         layers = []
         # print("paths: ", paths)
         # print("attrib: ", attributes)
@@ -24,14 +25,18 @@ class Layers(object):
                     joints[a['fsjoint']].append(p)
                 else:
                     joints[a['fsjoint']] = [p]
+            elif 'fsfixed' in a:
+                fixed.append(p)
             else:
                 layers.append(Layer(p,a))
 
         self.joints = joints
+        self.fixed = fixed
         self.layers = layers
 
         # print("joints: ", joints.keys())
         joint_assoc = {}
+        fixed_names = []
 
         for joint in self.joints: # collection of ovals
             for oval in self.joints[joint]: #individual ovals
@@ -49,8 +54,19 @@ class Layers(object):
                             else:
                                 joint_assoc[joint] = [name]
                         i += 1
-        # print("layers: ", layers.names)
 
+        for fix in self.fixed:
+            for a, layer in enumerate(self.layers):
+                i = 0
+                for point in layer.straight_pairs:
+                    # print("point: ", point)
+                    if self.encloses(fix, point):
+                        # print("Constraint: ", layer.id, point)
+                        name = layer.id + "_p" + str(i)
+                        fixed_names.append(name)
+                    i += 1
+        # print("layers: ", layers.names)
+        print(fixed_names)
         s = Solver(joint_assoc, self.layers)
         self.layers = s.solve()
 

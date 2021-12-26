@@ -97,29 +97,27 @@ class Layer(object):
             path = rotate(path, self._angle)
 
         #Bounding box to find path origin and translate to global origin
-        xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
-        origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
+        # xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
+        # origin = [(xmax + xmin) / 2, (ymax + ymin) / 2]
 
         for segment in path:
-            if isinstance(segment, Line):
-                straight_pairs.append([segment.start.real, segment.start.imag])
-                interpolated_pairs.append([segment.start.real, segment.start.imag])
-                # straight_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
-                # interpolated_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
-            elif isinstance(segment, CubicBezier) or isinstance(segment, Arc) or isinstance(segment, QuadraticBezier):
-                start = [segment.start.real, segment.start.imag]
-                straight_pairs.append(start)
-                interpolated_pairs.append(start)
+            start = [segment.start.real, segment.start.imag]
+            straight_pairs.append(start)
+            interpolated_pairs.append(start)
+            # straight_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
+            # interpolated_pairs.append([segment.start.real - origin[0], segment.start.imag - origin[1]])
+            if isinstance(segment, CubicBezier) or isinstance(segment, Arc) or isinstance(segment, QuadraticBezier):
+
 
                 for i in range(1, points):
                     end = [segment.point(i/points).real, segment.point(i/points).imag]
                     interpolated_pairs.append(end)
 
                 straight_pairs.append(end)
-            else:
+            elif isinstance(segment, Line) != True:
                 print('Unknown SVG path type!', segment)
         try:
-            straight_pairs.append(straight_pairs[0])
+            # straight_pairs.append(straight_pairs[0])
             interpolated_pairs.append(interpolated_pairs[0])
         except:
             print('No segments in path')

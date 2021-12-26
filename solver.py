@@ -24,7 +24,9 @@ class Solver(object):
 
         # print(joints)
         # print(layers)
+        self.solve_joints(joints, layers)
 
+    def solve_joints(self, joints, layers):
 
         for i, layer in enumerate(layers):
             print("Solving for ", layer.id)
