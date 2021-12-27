@@ -13,9 +13,10 @@ from geosolver.diagnostic import diag_select, diag_print
 
 
 class Solver(object):
-    def __init__(self, joints, layers):
+    def __init__(self, joints, fixed, layers):
         self.joints = joints
         self.layers = layers
+        self.fixed = fixed
         self.problem = GeometricProblem(dimension=3)
 
     def solve(self):
@@ -24,29 +25,42 @@ class Solver(object):
 
         # print(joints)
         # print(layers)
+        self.solve_shape(layers)
+        self.solve_fixed(self.fixed, layers)
         self.solve_joints(joints, layers)
+        self.test(self.problem)
 
-    def solve_joints(self, joints, layers):
+    def solve_shape(self, layers):
+        for i, layer in enumerate(layers):
+            print("Solving shape ", layer.id)
+            for point in layer.named_pairs:
+                self.problem.add_point(point[0], vector([point[1], point[2],0]))
+
+    def solve_fixed(self, fixed, layers):
 
         for i, layer in enumerate(layers):
-            print("Solving for ", layer.id)
+            print("Solving fixed ", layer.id)
             i = 0
-            for point in layer.jointed_pairs:
-                name = layer.id + "_p" + str(i)
-                self.problem.add_point(name, vector([layer.straight_pairs[i][1], layer.straight_pairs[i][1],0]))
+            for point in layer.named_pairs:
+                if point[0] in fixed:
+                    self.problem.add_constraint(FixConstraint(point[0], vector([point[1], point[2],0])))
 
                 i += 1
             # layers[i].volume = self.solve_layer(layer)
 
-        for joint in joints:
-            i = 2
+    def solve_joints(self, joints, layers):
+        print("joints ", joints)
+        for jointid in joints:
+            joint = joints[jointid]
+            i = 1
             while i < len(joint):
-                self.problem.add_constraint(DistanceConstraint(joint[1], joint[i], 0.0))
+                print("Solving joint ", joint[0], joint[i])
+                self.problem.add_constraint(DistanceConstraint(joint[0], joint[i], 0.0))
                 i += 1
 
-        self.test(self.problem)
 
         return layers
+
 
     def test(self, problem):
         """Test solver on a given problem"""

@@ -43,31 +43,27 @@ class Layers(object):
                 # print("Solving for ", joint, oval)
                 for a, layer in enumerate(self.layers):
                     i = 0
-                    for point in layer.straight_pairs:
+                    for point in layer.named_pairs: #point[0] is the name
                         # print("point: ", point)
-                        if self.encloses(oval, point):
+                        if self.encloses(oval, point[1:]):
                             # print("Constraint: ", layer.id, point)
-                            name = layer.id + "_p" + str(i)
-                            layer.jointed_pairs.append([name, point])
+                            layer.jointed_pairs.append(point)
                             if joint in joint_assoc:
-                                joint_assoc[joint].append(name)
+                                joint_assoc[joint].append(point[0])
                             else:
-                                joint_assoc[joint] = [name]
+                                joint_assoc[joint] = [point[0]]
                         i += 1
 
         for fix in self.fixed:
             for a, layer in enumerate(self.layers):
-                i = 0
-                for point in layer.straight_pairs:
-                    # print("point: ", point)
-                    if self.encloses(fix, point):
-                        # print("Constraint: ", layer.id, point)
-                        name = layer.id + "_p" + str(i)
-                        fixed_names.append(name)
-                    i += 1
+                for point in layer.named_pairs:
+                    # print("fix: ", fix, point)
+                    if self.encloses(fix, point[1:]):
+                        print("fix: ", point)
+                        fixed_names.append(point[0])
         # print("layers: ", layers.names)
-        print(fixed_names)
-        s = Solver(joint_assoc, self.layers)
+        # print(fixed_names)
+        s = Solver(joint_assoc, fixed_names, self.layers)
         self.layers = s.solve()
 
 

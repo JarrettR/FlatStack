@@ -93,8 +93,8 @@ class Layer(object):
         #Interpolated number of points:
         points = 10
 
-        if(self._angle != 0):
-            path = rotate(path, self._angle)
+        # if(self._angle != 0):
+        #     path = rotate(path, self._angle)
 
         #Bounding box to find path origin and translate to global origin
         # xmin, xmax, ymin, ymax = paths2svg.big_bounding_box(path)
