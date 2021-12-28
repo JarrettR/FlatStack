@@ -6,9 +6,10 @@ to tranform the 2D points into three dimensional space
 from layer import Layer
 # from vectors import Point, Vector
 from svgpathtools import paths2svg
-from geosolver.geometric import GeometricProblem, GeometricSolver, DistanceConstraint,AngleConstraint, FixConstraint, RightHandedConstraint
+from geosolver.geometric import GeometricProblem, GeometricSolver, DistanceConstraint,AngleConstraint, FixConstraint, CoincidenceConstraint
 from geosolver.vector import vector
 from geosolver.diagnostic import diag_select, diag_print
+from geosolver.intersections import distance_2p, angle_3p
 
 
 
@@ -31,10 +32,25 @@ class Solver(object):
         self.test(self.problem)
 
     def solve_shape(self, layers):
-        for i, layer in enumerate(layers):
+        for layer in layers:
             print("Solving shape ", layer.id)
-            for point in layer.named_pairs:
-                self.problem.add_point(point[0], vector([point[1], point[2],0]))
+
+            pt0 = layer.named_pairs[0][0]
+            pt1 = layer.named_pairs[1][0]
+            pt2 = layer.named_pairs[2][0]
+            for i, point in enumerate(layer.named_pairs):
+                # Add initial points
+                self.problem.add_variable(point[0], vector([point[1], point[2],0]))
+
+                # Lock them together
+                if i > 0:
+                    self.problem.add_constraint(DistanceConstraint(pt0, point[0],distance_2p(self.problem.get_point(pt0), self.problem.get_point(point[0]))))
+                if i > 1:
+                    self.problem.add_constraint(AngleConstraint(pt0, pt1, point[0],
+                        angle_3p(self.problem.get_point(pt0), self.problem.get_point(pt1), self.problem.get_point(point[0]))))
+                if i > 2:
+                    self.problem.add_constraint(AngleConstraint(pt0, pt2, point[0],
+                        angle_3p(self.problem.get_point(pt0), self.problem.get_point(pt2), self.problem.get_point(point[0]))))
 
     def solve_fixed(self, fixed, layers):
 
@@ -55,7 +71,7 @@ class Solver(object):
             i = 1
             while i < len(joint):
                 print("Solving joint ", joint[0], joint[i])
-                self.problem.add_constraint(DistanceConstraint(joint[0], joint[i], 0.0))
+                self.problem.add_constraint(CoincidenceConstraint(joint[0], joint[i]))
                 i += 1
 
 
