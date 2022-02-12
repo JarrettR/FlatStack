@@ -6,11 +6,12 @@ to tranform the 2D points into three dimensional space
 from layer import Layer
 # from vectors import Point, Vector
 from svgpathtools import paths2svg
-from geosolver.geometric import GeometricProblem, GeometricSolver, DistanceConstraint,AngleConstraint, FixConstraint, CoincidenceConstraint
+from geosolver.geometric import GeometricProblem, GeometricSolver, DistanceConstraint,AngleConstraint, FixConstraint, CoincidenceConstraint, RigidConstraint
 from geosolver.vector import vector
 from geosolver.diagnostic import diag_select, diag_print
 from geosolver.intersections import distance_2p, angle_3p
-
+from geosolver.configuration import Configuration
+from geosolver.geometric import Point
 
 
 class Solver(object):
@@ -19,6 +20,7 @@ class Solver(object):
         self.layers = layers
         self.fixed = fixed
         self.problem = GeometricProblem(dimension=3)
+        # self.problem = GeometricProblem(dimension=3, use_prototype=False)
 
     def solve(self):
         joints = self.joints
@@ -33,25 +35,19 @@ class Solver(object):
 
     def solve_shape(self, layers):
         for layer in layers:
-            print("Solving shape ", layer.id)
+            print("Defining shape ", layer.id)
 
-            pt0 = layer.named_pairs[0][0]
-            pt1 = layer.named_pairs[1][0]
-            pt2 = layer.named_pairs[2][0]
-            for i, point in enumerate(layer.named_pairs):
+            conf = {}
+            for point in layer.named_pairs:
+                print("With point ", point)
                 # Add initial points
-                self.problem.add_variable(point[0], vector([point[1], point[2],0]))
+                self.problem.add_variable(Point(point[0]), vector([point[1], point[2],0]))
 
                 # Lock them together
-                if i > 0:
-                    self.problem.add_constraint(DistanceConstraint(pt0, point[0],distance_2p(self.problem.get_point(pt0), self.problem.get_point(point[0]))))
-                if i > 1:
-                    self.problem.add_constraint(AngleConstraint(pt0, pt1, point[0],
-                        angle_3p(self.problem.get_point(pt0), self.problem.get_point(pt1), self.problem.get_point(point[0]))))
-                if i > 2:
-                    self.problem.add_constraint(AngleConstraint(pt0, pt2, point[0],
-                        angle_3p(self.problem.get_point(pt0), self.problem.get_point(pt2), self.problem.get_point(point[0]))))
+                conf[Point(point[0])] = vector([point[1], point[2],0])
 
+
+            self.problem.add_constraint(RigidConstraint(Configuration(conf)))
     def solve_fixed(self, fixed, layers):
 
         for i, layer in enumerate(layers):
@@ -59,7 +55,7 @@ class Solver(object):
             i = 0
             for point in layer.named_pairs:
                 if point[0] in fixed:
-                    self.problem.add_constraint(FixConstraint(point[0], vector([point[1], point[2],0])))
+                    self.problem.add_constraint(FixConstraint(Point(point[0]), vector([point[1], point[2],0])))
 
                 i += 1
             # layers[i].volume = self.solve_layer(layer)
@@ -71,7 +67,8 @@ class Solver(object):
             i = 1
             while i < len(joint):
                 print("Solving joint ", joint[0], joint[i])
-                self.problem.add_constraint(CoincidenceConstraint(joint[0], joint[i]))
+                self.problem.add_constraint(CoincidenceConstraint(Point(joint[0]), Point(joint[i])))
+                # self.problem.add_constraint(DistanceConstraint(joint[0], joint[i], 0.0))
                 i += 1
 
 
